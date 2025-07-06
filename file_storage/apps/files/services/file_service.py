@@ -1,9 +1,8 @@
 import logging
 
-from base import BaseService
-from file_storage.apps.files.storage.base import (
-    BaseStorage
-)
+from .base import BaseService
+
+from apps.files.storage.base import BaseStorage
 
 
 class FileService(BaseService):
@@ -15,5 +14,6 @@ class FileService(BaseService):
     def save(self, file_name: str, file: bytes) -> str:
         return self.storage.save(file_name, file)
 
-    def get(self, file_name: str) -> bytes:
-        return self.storage.get(file_name)
+    def get(self, uid: str) -> tuple[str, bytes]:
+        file_name = self.storage.get_meta(uid)
+        return (file_name, self.storage.get(uid))

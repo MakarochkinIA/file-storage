@@ -1,6 +1,8 @@
-from pathlib import Path
 import os
+from pathlib import Path
+
 from dotenv import load_dotenv
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -27,7 +29,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'apps.storage'
+    'apps.files'
 ]
 
 MIDDLEWARE = [
@@ -40,7 +42,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'file_storage.urls'
+ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
     {
@@ -57,18 +59,18 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'file_storage.wsgi.application'
+WSGI_APPLICATION = 'config.wsgi.application'
 
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 
 # Password validation
@@ -113,4 +115,71 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'File Storage API',
+    'DESCRIPTION': 'Upload and download files (max 16MB)',
+    'VERSION': '1.0.0',
+}
+
 MONGO_DB_HOST = os.getenv("MONGO_DB_HOST", "mongodb://localhost:27017")
+
+MAX_FILE_SIZE = 16 * 1024 * 1024
+
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "standard": {
+            "format": "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
+            "datefmt": "%d/%b/%Y %H:%M:%S",
+        },
+        "json": {
+            "()": "config.logger.CustomJsonFormatter",
+            "format": "%(asctime)s %(levelname)s %(name)s %(lineno)s %(message)s",
+            "datefmt": "%Y-%m-%dT%H:%M:%S.%fZ",
+            "rename_fields": {
+                "asctime": "time",
+                "levelname": "level",
+                "name": "logger",
+                "lineno": "line",
+                "message": "msg",
+            },
+            "constant_fields": {
+                "module": "Files",
+            },
+        },
+    },
+    "handlers": {
+        "null": {
+            "level": "INFO",
+            "class": "logging.NullHandler",
+        },
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "json",
+        },
+    },
+    "loggers": {
+
+        "files": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
+
+        # Root logger for uncaught messages
+        "": {
+            "level": "INFO",
+            "handlers": [
+                "console",
+            ],  # Capture uncaught errors
+            "propagate": True,
+        },
+    },
+}

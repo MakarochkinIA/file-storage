@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ../file_storage
+    container_name: file_storage_web
+    command: gunicorn config.wsgi -c ./gunicorn.conf.py
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mongo
+    environment:
+      - MONGO_DB_HOST=mongodb://mongo:27017
+
+  mongo:
+    image: mongo:6
+    container_name: file_storage_mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  nginx:
+    build:
+      context: ../gateway
+
+    container_name: file_storage_nginx
+    ports:
+      - "7600:80"
+    depends_on:
+      - backend
+
+volumes:
+  mongo_data:

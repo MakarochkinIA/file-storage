@@ -1,16 +1,10 @@
-import uuid
 import datetime
+import uuid
 
-from pymongo import MongoClient, InsertOne
-
+from .base import DataHandler, StorageFileNotFound
+from .const import MONGO_CHUNKS_NAME, MONGO_DB_NAME, MONGO_FILES_NAME
 from django.conf import settings
-
-from base import DataHandler, StorageFileNotFound
-from const import (
-    MONGO_DB_NAME,
-    MONGO_CHUNKS_NAME,
-    MONGO_FILES_NAME
-)
+from pymongo import InsertOne, MongoClient
 
 
 class MongoDataHandler(DataHandler):
@@ -54,3 +48,6 @@ class MongoDataHandler(DataHandler):
             .sort("idx", 1)
         )
         return [doc["data"] for doc in cur]
+
+    def get_meta(self, uid: str) -> dict:
+        return self.files.find_one({"_id": uid})
