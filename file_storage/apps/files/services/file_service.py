@@ -15,5 +15,4 @@ class FileService(BaseService):
         return self.storage.save(file_name, file)
 
     def get(self, uid: str) -> tuple[str, bytes]:
-        file_name = self.storage.get_meta(uid)
-        return (file_name, self.storage.get(uid))
+        return self.storage.get(uid)

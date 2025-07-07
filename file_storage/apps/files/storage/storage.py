@@ -18,7 +18,7 @@ class ChunkedStorageHandler():
         self.data_handler.save_many(uid, content)
         return uid
 
-    def split(self, content: bytes, parts: int) -> list[bytes]:
+    def split(self, content: bytes, parts: int = None) -> list[bytes]:
         if parts is None:
             parts = self.parts
         if not isinstance(content, bytes):
@@ -40,7 +40,10 @@ class ChunkedStorageHandler():
         return self.archive_handler.extract(content)
 
     def save(self, name: str, content: bytes) -> str:
-        zip_parts = [self.archive(item) for item in self.split(content)]
+        zip_parts = [
+            self.archive(item)
+            for item in self.split(content, self.parts)
+        ]
         return self._save(name, zip_parts)
 
     def get_chunks(self, name: str) -> list[bytes]:
@@ -49,12 +52,13 @@ class ChunkedStorageHandler():
     def merge(self, chunks: list[bytes]) -> bytes:
         return b''.join(chunks)
 
-    def get(self, name: str) -> bytes:
+    def get(self, name: str) -> tuple[str, bytes]:
+        meta = self.get_meta(name)
         unzip_chunks = [
             self.decompress(item)
             for item in self.get_chunks(name)
         ]
-        return self.merge(unzip_chunks)
+        return meta.get("file_name"), self.merge(unzip_chunks)
 
     def get_meta(self, name: str) -> dict:
         return self.data_handler.get_meta(name)

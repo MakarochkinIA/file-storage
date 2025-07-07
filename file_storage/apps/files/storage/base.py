@@ -77,6 +77,6 @@ class BaseStorage(StorageBackend):
         uid = self.storage.save(name, content)
         return uid
 
-    def get(self, name: str) -> bytes:
-        file = self.storage.get(name)
-        return file
+    def get(self, name: str) -> tuple[str, bytes]:
+        file_name, file = self.storage.get(name)
+        return file_name, file

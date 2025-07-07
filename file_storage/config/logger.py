@@ -21,8 +21,12 @@ class CustomJsonFormatter(jsonlogger.JsonFormatter):
             return dt.strftime(datefmt)
         return dt.isoformat()
 
+    # Fallback for anything JSON can’t handle
+    def json_default(self, obj):
+        return str(obj)
+
     def jsonify_log_record(self, log_record):
         """
         Ensures UTF-8 encoding for logs instead of escaped Unicode sequences.
         """
-        return json.dumps(log_record, ensure_ascii=False)
+        return json.dumps(log_record, ensure_ascii=False, default=str)

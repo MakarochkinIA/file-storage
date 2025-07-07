@@ -164,12 +164,18 @@ LOGGING = {
             "class": "logging.StreamHandler",
             "formatter": "json",
         },
+
     },
     "loggers": {
 
         "files": {
             "handlers": ["console"],
             "level": "INFO",
+            "propagate": False,
+        },
+        "django.request": {
+            "handlers": ["console"],
+            "level": "WARNING",
             "propagate": False,
         },
 
@@ -179,7 +185,7 @@ LOGGING = {
             "handlers": [
                 "console",
             ],  # Capture uncaught errors
-            "propagate": True,
+            "propagate": False,
         },
     },
 }

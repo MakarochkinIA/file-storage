@@ -3,14 +3,13 @@ import uuid
 
 from .base import DataHandler, StorageFileNotFound
 from .const import MONGO_CHUNKS_NAME, MONGO_DB_NAME, MONGO_FILES_NAME
-from django.conf import settings
 from pymongo import InsertOne, MongoClient
 
 
 class MongoDataHandler(DataHandler):
 
-    def __init__(self):
-        self.host = settings.MONGO_DB_HOST
+    def __init__(self, host):
+        self.host = host
         self.client = MongoClient(self.host)
         self.db = self.client[MONGO_DB_NAME]
         self.files = self.db[MONGO_FILES_NAME]
@@ -40,14 +39,14 @@ class MongoDataHandler(DataHandler):
         return uid
 
     def get(self, uid: str) -> list[bytes]:
-        meta = self.files.find_one({"_id": uid})
+        meta = self.files.find_one({"_id": str(uid)})
         if not meta:
             raise StorageFileNotFound(f"{uid} not found")
         cur = (
-            self.chunks.find({"file_id": uid})
+            self.chunks.find({"file_id": str(uid)})
             .sort("idx", 1)
         )
         return [doc["data"] for doc in cur]
 
     def get_meta(self, uid: str) -> dict:
-        return self.files.find_one({"_id": uid})
+        return self.files.find_one({"_id": str(uid)})
