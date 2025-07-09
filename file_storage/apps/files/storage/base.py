@@ -50,6 +50,7 @@ class DataHandler(ABC):
 
 
 class ArchiveHandler(ABC):
+    """Compress/decompress content."""
     @abstractmethod
     def extract(self, content: bytes) -> bytes:
         pass
@@ -60,6 +61,8 @@ class ArchiveHandler(ABC):
 
 
 class StorageHandler(ABC):
+    """Save/download files."""
+
     @abstractmethod
     def save(self, name: str, content: bytes) -> str:
         pass
@@ -70,6 +73,8 @@ class StorageHandler(ABC):
 
 
 class BaseStorage(StorageBackend):
+    """Save/download files."""
+
     def __init__(self, storage_handler: StorageHandler):
         self.storage = storage_handler
 

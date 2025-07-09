@@ -14,6 +14,6 @@ def test_upload_and_download_round_trip(api_client):
     print(uid)
 
     # ---- download -----------------------------------------------------
-    download_resp = api_client.get(f"/api/v1/files/download/{uid}")
+    download_resp = api_client.get(f"/api/v1/files/download/{uid}/")
     assert download_resp.status_code == 200
     assert b''.join(download_resp.streaming_content) == payload

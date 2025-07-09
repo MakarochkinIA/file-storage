@@ -4,6 +4,11 @@ from .base import ArchiveHandler, DataHandler, StorageTypeError
 
 
 class ChunkedStorageHandler():
+    """
+    Storage handler that splits file to n parts, archives them.
+    On download extracts and combines them.
+    """
+
     def __init__(
             self,
             data_handler: DataHandler,
@@ -19,6 +24,9 @@ class ChunkedStorageHandler():
         return uid
 
     def split(self, content: bytes, parts: int = None) -> list[bytes]:
+        """
+        Split content equaly.
+        """
         if parts is None:
             parts = self.parts
         if not isinstance(content, bytes):
@@ -63,11 +71,11 @@ class ChunkedStorageHandler():
     def get_meta(self, name: str) -> dict:
         return self.data_handler.get_meta(name)
 
-    def exists(self, name: str) -> bool:
-        return self.data_handler.exists(name)
-
 
 class ZipArchiveHandler(ArchiveHandler):
+    """
+    Uses zlib library to compress content.
+    """
     def compress(self, content: bytes) -> bytes:
         return zlib.compress(content)
 

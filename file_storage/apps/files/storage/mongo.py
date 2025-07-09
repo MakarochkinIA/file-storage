@@ -1,12 +1,16 @@
 import datetime
 import uuid
 
+from pymongo import InsertOne, MongoClient
+
 from .base import DataHandler, StorageFileNotFound
 from .const import MONGO_CHUNKS_NAME, MONGO_DB_NAME, MONGO_FILES_NAME
-from pymongo import InsertOne, MongoClient
 
 
 class MongoDataHandler(DataHandler):
+    """
+    Worker with MongoDB.
+    """
 
     def __init__(self, host):
         self.host = host

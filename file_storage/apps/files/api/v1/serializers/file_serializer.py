@@ -3,6 +3,9 @@ from rest_framework import serializers
 
 
 class FileUploadSerializer(serializers.Serializer):
+    """
+    File serializer. Validates file size.
+    """
     file = serializers.FileField()
 
     def validate_file(self, uploaded):

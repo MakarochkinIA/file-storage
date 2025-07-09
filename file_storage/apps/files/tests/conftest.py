@@ -5,7 +5,7 @@ from collections import defaultdict
 import pytest
 
 from apps.files.services.file_service import FileService
-from apps.files.storage.base import BaseStorage, DataHandler, ArchiveHandler
+from apps.files.storage.base import ArchiveHandler, BaseStorage, DataHandler
 from apps.files.storage.storage import ChunkedStorageHandler
 
 logger = logging.getLogger("files")
@@ -32,9 +32,6 @@ class InMemoryDataHandler(DataHandler):
 
     def get_meta(self, name: str) -> dict:  # noqa: D401
         return self._meta[str(name)]
-
-    def exists(self, name: str) -> bool:  # noqa: D401
-        return name in self._meta
 
 
 class NoopArchive(ArchiveHandler):

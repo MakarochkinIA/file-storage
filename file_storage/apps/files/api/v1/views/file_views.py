@@ -18,6 +18,9 @@ logger = logging.getLogger("files")
 
 
 class FileUploadView(BaseView):
+    """
+    POST /files/upload/
+    """
     parser_classes = [MultiPartParser]
     serializer_class = FileUploadSerializer
     service = file_service
@@ -46,6 +49,9 @@ class FileUploadView(BaseView):
         ],
     )
     def post(self, request, *args, **kwargs):
+        """
+        Logs action, saves file.
+        """
         self.log_action()
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -99,6 +105,9 @@ class FileDownloadView(BaseView):
         },
     )
     def get(self, request, uid, *args, **kwargs):
+        """
+        Logs action, downloads file.
+        """
         self.log_action()
         try:
             name, content = self.service.get(uid)
