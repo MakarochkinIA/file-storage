@@ -11,26 +11,23 @@ from apps.files.storage.storage import ChunkedStorageHandler
 logger = logging.getLogger("files")
 
 
-# ---------------------------------------------------------------------
-# In-memory stubs
-# ---------------------------------------------------------------------
 class InMemoryDataHandler(DataHandler):
     def __init__(self):
         self._blobs = defaultdict(list)
         self._meta = {}
 
-    def save_many(self, uid: str, data: list[bytes]) -> None:  # noqa: D401
+    def save_many(self, uid: str, data: list[bytes]) -> None:
         self._blobs[str(uid)] = data
 
-    def save_meta(self, name: str, parts: int) -> str:  # noqa: D401
+    def save_meta(self, name: str, parts: int) -> str:
         uid = str(uuid.uuid4())
         self._meta[uid] = {"parts": parts, "file_name": name}
         return uid
 
-    def get(self, name: str) -> list[bytes]:  # noqa: D401
+    def get(self, name: str) -> list[bytes]:
         return self._blobs[str(name)]
 
-    def get_meta(self, name: str) -> dict:  # noqa: D401
+    def get_meta(self, name: str) -> dict:
         return self._meta[str(name)]
 
 
@@ -44,9 +41,6 @@ class NoopArchive(ArchiveHandler):
         return content
 
 
-# ---------------------------------------------------------------------
-# Fixtures
-# ---------------------------------------------------------------------
 @pytest.fixture(scope="session")
 def file_service() -> FileService:
     """Session-wide FileService wired to the in-memory handlers."""

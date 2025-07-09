@@ -5,25 +5,22 @@ from pythonjsonlogger import jsonlogger
 
 
 class CustomJsonFormatter(jsonlogger.JsonFormatter):
+    """
+    Json logger to format time and use utf-8.
+    """
     def __init__(self, *args, **kwargs):
         self.constant_fields = kwargs.pop("constant_fields", {})
         super().__init__(*args, **kwargs)
 
     def add_fields(self, log_record, record, message_dict):
         super().add_fields(log_record, record, message_dict)
-        # Add constant fields to every log entry
         log_record.update(self.constant_fields)
 
     def formatTime(self, record, datefmt=None):
-        # Use timezone-aware datetime
         dt = datetime.fromtimestamp(record.created, tz=timezone.utc)
         if datefmt:
             return dt.strftime(datefmt)
         return dt.isoformat()
-
-    # Fallback for anything JSON can’t handle
-    def json_default(self, obj):
-        return str(obj)
 
     def jsonify_log_record(self, log_record):
         """
