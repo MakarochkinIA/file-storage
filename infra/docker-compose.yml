@@ -4,13 +4,12 @@ services:
   backend:
     build: ../file_storage
     container_name: file_storage_web
+    env_file: .env
     command: gunicorn config.wsgi -c ./gunicorn.conf.py
     ports:
       - "8000:8000"
     depends_on:
       - mongo
-    environment:
-      - MONGO_DB_HOST=mongodb://mongo:27017
 
   mongo:
     image: mongo:6
