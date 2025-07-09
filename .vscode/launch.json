@@ -1,0 +1,17 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Debug Pytest",
+            "type": "debugpy",
+            "request": "launch",
+            "args": [
+                "-q"
+            ],
+            "console": "integratedTerminal",
+            "module": "pytest",
+            "cwd": "${workspaceFolder}/file_storage/apps/files/tests",  // Set the working directory
+            "purpose": ["debug-test"]
+        }
+    ]
+}
